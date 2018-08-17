@@ -330,12 +330,12 @@ def iteratePrimal(lpo):
     for x in range(numUsers*numAssign):
         xIndex.append(x)
     oldAssign = 0
-    oldDemand = RHS[etaIndex]
+    oldDemand = RHS[etaIndex] *-1
     #print(oldDemand)
     
     eta = lpsolution['z'][etaIndex]
     
-    demand = RHS[etaIndex]
+    demand = RHS[etaIndex] * -1
     demand = demand.trans()
     #selection = AMatrix[:,etaIndex]*eta/RHS
     selection = (AMatrix[:,etaIndex]*eta)
@@ -348,7 +348,7 @@ def iteratePrimal(lpo):
             maxnum = selection[i]
             maxIndex = i
     optass = maxIndex
-    demand = demand-AMatrix[optass,etaIndex]
+    demand = demand+AMatrix[optass,etaIndex]
     demand = demand.trans()
     RHS[etaIndex] = demand
     if(optass > (numAssign*numUsers)):
@@ -369,11 +369,11 @@ def iteratePrimal(lpo):
         AMatrix[xIndex,etaIndex] = mul(AMatrix[xIndex,etaIndex],unassignedMatrix)
     cost = cost+CMatrix[optass]
     counter = counter+1
-    if(max(demand)>=0):
+    if(max(demand)<=0):
         exitcount = 1
     if oldAssign >0:
         exitcount = 3
-    if(max(oldDemand)>max(demand)):
+    if(max(oldDemand)<max(demand)):
         exitcount = 4
     
     print(assignment)
